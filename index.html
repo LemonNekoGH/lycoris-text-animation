@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=false" />
+    <title>Lycoris Animation</title>
+    <style>
+      #text {
+        display: inline-block;
+        opacity: 0;
+      }
+      #text_mask {
+        display: inline-block;
+        background-color: black;
+        position: absolute;
+        transform: translateX(-100%) scaleX(0);
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <input type="text" id="text_input"/>
+      <button id="btn_set_text">Set text</button>
+      <button id="btn_show">Start show animation</button>
+      <button id="btn_hide">Start hide animation</button>
+    </div>
+    <div>
+      <!--元素整体-->
+      <span>
+        <!--文本-->
+        <span id="text">Author: LemonNeko</span>
+        <!--动画遮罩-->
+        <span id="text_mask">Author: LemonNeko</span>
+      </span>
+    </div>
+    <script type="module">
+      globalThis.onload = () => {
+        // find elements
+        const textInput = document.querySelector('#text_input')
+        const setTextBtn = document.querySelector('#btn_set_text')
+        const showBtn = document.querySelector('#btn_show')
+        const hideBtn = document.querySelector('#btn_hide')
+        const text = document.querySelector('#text')
+        const textMask = document.querySelector('#text_mask')
+
+        setTextBtn.addEventListener('click', () => {
+          const t = textInput.value
+          text.textContent = t
+          textMask.textContent = t
+        })
+
+        const onTextMaskTransitionEnd = (e) => {
+          if (text.style.opacity === '0' || text.style.opacity === '') {
+            // start second part
+            text.style.opacity = '1'
+          } else {
+            text.style.opacity = '0'
+          }
+          textMask.style.transform = 'translateX(-100%) scaleX(0)'
+          textMask.style.transformOrigin = 'right'
+          textMask.style.transitionProperty = 'transform'
+          textMask.style.transitionDuration = '500ms'
+          textMask.removeEventListener('transitionend', onTextMaskTransitionEnd)
+          console.log(textMask.style.transformOrigin)
+        }
+
+        
+
+        showBtn.addEventListener('click', () => {
+          text.style = {}
+          setTimeout(() => {
+            textMask.style.transform = 'translateX(-100%)'
+            textMask.style.transformOrigin = 'left center'
+            textMask.style.transitionProperty = 'transform'
+            textMask.style.transitionDuration = '500ms'
+            textMask.addEventListener('transitionend', onTextMaskTransitionEnd)
+          }, 50)
+        })
+
+        hideBtn.addEventListener('click', () => {
+          text.style.opacity = '1'
+          setTimeout(() => {
+            textMask.style.transform = 'translateX(-100%)'
+            textMask.style.transformOrigin = 'left center'
+            textMask.style.transitionProperty = 'transform'
+            textMask.style.transitionDuration = '500ms'
+            textMask.addEventListener('transitionend', onTextMaskTransitionEnd)
+          }, 50)
+        })
+        
+      }
+    </script>
+  </body>
+</html>
